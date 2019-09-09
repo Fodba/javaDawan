@@ -1,0 +1,326 @@
+---------------------------- FORMATION JPA ------------------------------
+Mohamed DERKAOUI
+mderkaoui@dawan.fr
+
+    Notes : https://mensuel.framapad.org/p/jpa-amiens
+    Support : http://demo.dawan.biz/mohamed/jpa.pdf
+
+_______________________
+JPA = api permettant de faire du mapping relationnel objet
+
+Plusieurs implémentations disponibles : Hibernate, OpenJPA, ....
+
+On doit configurer le projet :
+    * des dépendances
+    * un fichier de configuration : persistence.xml
+       dans lequel on indiquera les identifiants de connexion
+       à la base de données
+
+Dialect : classe permettant de traduire le langage de l'ORM
+   vers du SQL natif en fonction du SGDB utilisé.
+
+La liaison avec les tables doit être réalisée avec des annotations :
+    @Entity : objet géré en bdd
+    @Table : caractéristique de la table (sinon on prend le nom de la classe)
+    @Id : clé primaire
+    @IdClass ou @EmbeddedId : clé primaire composée
+    @Column : caractéristiques de la colonne
+    @Temporal : date/Heure
+    @Enumerated : mapping des annotations
+    
+  @ElementCollection pour mapper des listes ou collections simples
+  
+  Mapping des Relations : 
+      - 1 à plusieurs / plusieurs à 1 : @ManyToOne, @OneToMany
+     - plusieurs à plusieurs:  @ManyToMany des 2 côtés
+       avec 1 seul mappedBy
+       - 1 à 1 :
+           * on peut mapper le OneToOne de 2 manières différentes
+             - Primary Key Association
+             - Foreign Key Association with unique constraint
+             
+
+___________________Modélisation Objet et annotations_______________
+Exo QCM :
+    Q1) ...........?
+        plusieurs choix de réponses (radio ou checkbox)
+        Bouton suivant
+
+1) Identifier les objets :
+    - (c)Qcm : 
+        long id, int version, String sujet
+        
+    - Question : 
+        long id, int version, String enonce, boolean multiple, Qcm qcm,int ordre
+        
+    - Reponse :
+        long id, int version, String texte, boolean correcte , Question question
+        
+    - Client : existe déjà
+    
+    - QcmTest (passage d'un qcm) : 
+         long id, int version, java.util.Date datePassage, 
+         Qcm qcm, Client client, int score
+         
+         _______________Mapping de clés composées________
+         La clé doit doit être représentée par une classe Serializable
+         annotée @Embeddable
+         avec les différents champs et une méthode equals
+         
+         L'entité contenant cette clé composée doit comporter 
+         l'annotation @EmbeddedId
+__________________QcmDaoTest ________________
+
+package fr.dawan.projweb.dao;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.junit.Test;
+
+import fr.dawan.projweb.entites.Qcm;
+import fr.dawan.projweb.entites.Question;
+import fr.dawan.projweb.entites.Reponse;
+import junit.framework.TestCase;
+
+public class QcmDaoTest extends TestCase {
+
+        // fabrique de connexions qui va charger
+        // la conf du persistence.xml
+        private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("mypersistence-unit");
+
+        @Test
+        public void testInsertionQcm() {
+
+                try {
+
+                        Qcm qcm1 = new Qcm();
+                        qcm1.setSujet("JAVA");
+
+                        Question qst1 = new Question();
+                        qst1.setEnonce("Comment déclarer une constante ?");
+                        qst1.setMultiple(false);
+                        qst1.setOrdre(1);
+                        qst1.setQcm(qcm1);
+                        
+                        Reponse rep1 = new Reponse();
+                        rep1.setQuestion(qst1);
+                        rep1.setCorrecte(true);
+                        rep1.setTexte("final type NOM = VALEUR;");
+                        
+                        EntityManager em = emf.createEntityManager();
+                        GenericDao.saveOrUpdate(rep1, rep1.getId(), 
+                                                                        em, false);
+                        
+                        Reponse rep2 = new Reponse();
+                        rep2.setQuestion(qst1);
+                        rep2.setCorrecte(false);
+                        rep2.setTexte("const NOM = VALEUR;");
+                        
+                        GenericDao.saveOrUpdate(rep2, rep2.getId(), 
+                                                                        em, false);
+                        
+                        Question qst2 = new Question();
+                        qst2.setEnonce("Comment créer un objet ?");
+                        qst2.setMultiple(true);
+                        qst2.setOrdre(2);
+                        qst2.setQcm(qcm1);
+
+                        Reponse rep21 = new Reponse();
+                        rep21.setQuestion(qst2);
+                        rep21.setCorrecte(true);
+                        rep21.setTexte("en instanciant sa classe");
+                        
+                        GenericDao.saveOrUpdate(rep21, rep21.getId(), 
+                                                                        em, false);
+                        
+                        Reponse rep22 = new Reponse();
+                        rep22.setQuestion(qst2);
+                        rep22.setCorrecte(true);
+                        rep22.setTexte("en appelant une méthode static renvoyant une instance");
+                        
+                        GenericDao.saveOrUpdate(rep22, rep22.getId(), 
+                                                                        em, false);
+                        
+                        Reponse rep23 = new Reponse();
+                        rep23.setQuestion(qst2);
+                        rep23.setCorrecte(false);
+                        rep23.setTexte("en le déclarant #define");
+                        
+                        GenericDao.saveOrUpdate(rep23, rep23.getId(), 
+                                                                        em, true);
+                        
+                        
+                        assertTrue(true);
+                } catch (Exception e) {
+                        fail(e.getMessage());
+                }
+        }
+
+        //méthode : testFindQuestion()
+        //méthode : testFindReponses()
+        //méthode : testFindReponseById()
+        
+        
+        //
+ 
+}
+
+_________QcmDao_________________
+
+package fr.dawan.projweb.dao;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
+import fr.dawan.projweb.entites.Question;
+import fr.dawan.projweb.entites.Reponse;
+
+public class QcmDao {
+
+        
+        @SuppressWarnings("unchecked")
+        public static Question findQuestion(long idQcm, int ordre, EntityManager em, boolean closeCnx) {
+                Question qst = null;
+                EntityTransaction tx = em.getTransaction();
+                try {
+                        String req = "FROM Question qst WHERE qst.qcm.id= :idQcm AND qst.ordre= :ordre";
+                        tx.begin();
+                        List<Question> res = em.createQuery(req)
+                                        .setParameter("idQcm", idQcm)
+                                        .setParameter("ordre", ordre)
+                                        .getResultList();
+                        if (res != null && res.size() > 0)
+                                qst = res.get(0);
+                        tx.commit();
+                } catch (Exception e) {
+                        throw e;
+                } finally {
+                        if (closeCnx)
+                                em.close();
+                }
+                return qst;
+        }
+
+        /*
+         * JP-QL (HQL) : FROM Question qst WHERE qst.qcm.id = :idQcm AND qst.ordre=
+         * :ordre
+         * 
+         * SQL natif : select * from t_questions qst where qst.qcm_id = ? AND ordre = ?
+         * 
+         */
+
+        // public static List<Reponse> findReponses(long idQuestion)
+        // FROM Reponse rep WHERE rep.question.id = :idQuestion
+        @SuppressWarnings("unchecked")
+        public static List<Reponse> findReponses(long idQuestion, EntityManager em, boolean closeCnx) {
+                List<Reponse> lRep = null;
+                EntityTransaction tx = em.getTransaction();
+                try {
+                        String req = "FROM Reponse rep WHERE rep.question.id= :idQuestion";
+                        tx.begin();
+                        lRep = em.createQuery(req)
+                                        .setParameter("idQuestion", idQuestion)
+                                        .getResultList();
+                        tx.commit();
+                } catch (Exception e) {
+                        throw e;
+                } finally {
+                        if (closeCnx)
+                                em.close();
+                }
+                return lRep;
+        }
+
+}
+___________________________________
+
+@Test
+        public void testFindQuestion() {
+                try {
+                        EntityManager em = emf.createEntityManager();
+                        Question qst = QcmDao.findQuestion(2L, 1, em, true);
+                        assertNotNull(qst);
+                        assertEquals("Comment déclarer une constante ?", qst.getEnonce());
+                } catch (Exception e) {
+                        fail(e.getMessage());
+                }
+                
+        }
+//____________________ Exo
+Créez une classe Utilisateur (package fr.dawan.projweb.entites) :
+     long id, int version, String nom, String email, String password
+     
+Une classe UtilisateurDao (package fr.dawan.projweb.dao) :
+    Utilisateur findByEmail(String email)
+    
+Une classe UtilisateurDaoTest
+    pour tester la méthode findByEmail    
+    
+    ______________________________
+    
+package fr.dawan.projweb.dao;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.junit.Test;
+
+import fr.dawan.projweb.entites.Qcm;
+import fr.dawan.projweb.entites.Question;
+import fr.dawan.projweb.entites.Reponse;
+import fr.dawan.projweb.entites.Utilisateur;
+import junit.framework.TestCase;
+
+public class UtilisateurDaoTest extends TestCase {
+
+        private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("mypersistence-unit");
+
+        @Test
+        public void testFindByEmail() {
+                try {
+                        EntityManager em = emf.createEntityManager();
+                        
+                        Utilisateur u1 = new Utilisateur();
+                        u1.setNom("Mohamed");
+                        u1.setEmail("mderkaoui@dawan.fr");
+                        GenericDao.saveOrUpdate(u1, u1.getId(), em, false);
+                        System.out.println("user 1 inséré !");
+                        
+                        Utilisateur u = UtilisateurDao.findByEmail("mderkaoui@dawan.fr", em, true);
+                        assertEquals("Mohamed", u.getNom());
+                } catch (Exception e) {
+                        fail(e.getMessage());
+                }
+                
+        }   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

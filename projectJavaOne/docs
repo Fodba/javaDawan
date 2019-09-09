@@ -1,0 +1,273 @@
+Formation Java Initiation + Approfondissement
+adelafont@jehann.fr
+https://mensuel.framapad.org/p/javaamiens
+
+https://www.dawan.fr/formations/jee/java/java-se-initiation-approfondissement
+
+lien slides :
+    initiation : https://www.dropbox.com/s/ag4yd77cojf9oog/Java_Initiation.pdf?dl=0
+    approfondissement : https://www.dropbox.com/s/i1fvsnobick2o5t/Java_approfondissement.pdf?dl=0
+    
+    ___________________________________________________
+Lien installation environnement
+    
+Téléchargement + install du jdk https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+Arnaud#9962Téléchargement + décompression d'un Eclipse Java Developer https://www.eclipse.org/downloads/ 
+____________________
+
+
+Java est un langage compilé et interprété  par une machine virtuelle (JVM = JRE)
+Il est indépendant de la plateforme.
+
+Il existe 3 éditions de Java :
+    
+
+        Java SE : Standard Edition : Fonctionnalité de base + interface graphique client lourd
+
+    Java EE : Enterprise edition : APIs web et composants distribués
+
+    Java ME : mobile edition : APIs embarquées
+
+
+    ___________________________
+
+
+Architecture d'un projet classique : Généralement il est composée de 3 couches :
+    
+
+        - Présentation (IHM => Interface humain machine)
+
+    Client lourd : Swing , Java Fx (java 8)
+
+    Client léger (web) : Servlet/JSP + framework MVC (spring MVC, JSF,...)
+
+    Client mobile
+
+   - Métier :
+
+           Classes Java ou de bibliothèque (.jar, équivalent .dll)
+
+    Web Services : une appli web accessible à distance qui répond à une requête
+
+    EJB : composants Java
+
+
+- Accès aux données : (fichier, ou une base de données ou autres)
+
+    JDBC (Java DataBase connectivity)
+
+
+    _________________________________________
+
+
+Processus compilation :
+    
+    .java ======> Compilation (javac) ========> .class (bytecode) =====> Interprétation (java) ======> Binaire
+    
+    
+    Le livrable .jar (Java ARchive) dans la cas d'une application graphique (client lourd) ou une bibliothèque
+WAR ( Web ARchive) pour une application web
+
+
+Il existe des outils builds pour construire un projet qui permettent de compiler et de construire le projet, ainsi que la gestion des dépendances (Maven , Ant , gradle,....)
+
+
+
+____________________________________
+
+Pour pouvoir coder en Java,  Il faut un kit de développement (JDK) qui contient :
+
+        - Le compilateur
+
+    - Interpréteur (JRE = JVM)
+
+    - un ensemnle d'outils (/bin du jdk)
+
+
+dans un éditeur simple , soit dans un IDE (Integrated Development Environment) plus complet et nous aidera dans la saisie, compilation en temps réelle, l'aide au débuguer en plein d'autres fonctionnalités.
+
+
+Les variables : Zone mémoire permettant de stocker une valeur typée
+
+type nom;
+
+2 type de variables.
+
+    Les types primitifs : 
+
+    Entier : byte, short, int, long
+
+    Décimaux, Réel : float, double
+
+    Character : char
+
+    Boolean : vrai faux / o ou 1
+
+    Les types références : pour tous les objets
+
+
+
+
+char Chaine = 'a';    => char chaine = 'a';
+
+char chainedeCaracteres = 'b'; =>  char chaineDeCaracteres = 'b';
+
+int float = 1_000;   => int float2 = 1000;
+
+int nombre_plus_grand = 250;  => int nombrePlusGrand = 250;
+
+boolean $isTrue = True ; => boolean $isTrue = true ;
+
+double 7chiffres = 40;
+
+short _jeSuisUnPetitEntier = 2.0;
+
+
+_________________________________________
+
+Les méthodes : 
+    
+    Un ensemble d'instructions réutilisable;
+    
+
+    procédure : => ne retourne pas de résultat (void)
+
+    fonction => int, 
+
+
+Exercice :
+    
+    Ecrire une méthode multiplication :
+
+    - prend deux double en paramètre
+
+    -return la multiplication des deux params (un double)
+
+
+    - static double multiplication(double a, double b) {
+
+
+    }
+
+Appeler la méthode dans le main et afficher le resultat dans la console.
+
+
+ _____________________________________________
+ 
+ Les conditions :
+     
+     si(condition1) {
+         
+        }
+    sinon {
+        
+     }
+    
+    
+Exercice :
+    
+    Ecrire une méthode qui reçoit 4 entiers et qui retourne le plus petit
+    
+    
+Exercice :
+    
+    
+    ________________________________
+    
+    Boucles 
+
+        While : boucle conditionnelle : tant que (condition), exécute les instructions 
+
+
+______________________________
+
+Exercice Bonus
+
+    Creer une classe Produit :
+
+        Avec comme attributs : long id, String description, double prix
+
+        Avec des constructeurs 
+
+
+    ____________________________
+    
+    Creer une classe Utilisateur
+    Attributs : nom, prenom, age, sexe
+    Constructeur : un par défaut  et un qui initialise tous les attributs (constructeur surchargé)
+
+Dans une méthode main()
+
+    Creer deux utilisateurs en utilisant des constructeurs différents
+
+
+
+    ______________________
+
+
+    Exercice :
+
+
+    Compléter la classe Utilisateur :
+
+    Ajouter variable static (utiliser mot clé static devant le nom de la variable)
+
+    nombreUtilisateur
+
+
+Exercice Aggregation :
+    
+    Ajouter une variable de type Adresse dans Utilisateur.
+    Donc créer la classe Adresse :
+
+            String adresse;
+
+    Creer un nouveau constructeur avec la variable Adresse
+
+    Appelé le nouveau constructeur dans le main
+
+
+
+    _______________________________________________________
+
+
+    Exercice Héritage, Polymorphisme et Classe abstraite
+
+
+    1 - Creer un nouveau package fr.dawan.exerciceHeritage
+
+    2 - Creer une classe abstraite Vehicule (JavaBean) :
+
+    - attribut : boolean isEnEtatMarche
+
+    - constructeurs
+
+    - getters /setters
+
+    - méthode abstraite : public isRoule();
+
+    3 - Creer une classe Voiture qui hérite de Vehicule (JavaBean)
+
+    - attribut : nombreRoues, immatriculation, marque
+
+    - constructeurs + getters / setters
+
+    - Implémenter la méthode abstraite : ici renvoie un boolean de type true
+
+    4 - Creer une classe Avion qui hérite de Véhicule (JavaBean)
+
+    - constructeurs
+
+    - Implémenter la méthode abstraite : : ici renvoie un boolean de type false
+
+    5 - Creer une classe qui contient un main()
+
+    Dans le main creer et remplir un tableau de Vehicule
+
+    Puis parcourir le tableau pour afficher la valeur renvoyé par la méthode isRoule
+
+
+
+
+
+

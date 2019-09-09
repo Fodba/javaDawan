@@ -1,0 +1,7 @@
+/.metadata/
+/target/
+src/test/
+.idea/
+*.exe
+.classpath
+.project

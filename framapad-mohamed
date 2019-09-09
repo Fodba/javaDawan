@@ -1,0 +1,407 @@
+ https://mensuel.framapad.org/p/java-amiens
+
+Support de cours : http://demo.dawan.biz/mohamed/maven.pdf
+      
+Notes : http://demo.dawan.biz/mohamed/java-amiens.txt
+
+____________________________________________
+Compilation et interprétation du code Java 
+____________________________________________
+    Java est un langage compilé et interprété
+    source.java === compilation ====> fichier.class ==interprétation (JVM/JRE)==> code machine
+
+_______________Types d'applications __________________________
+On peut développer des applications :
+    - client lourd (graphique) : on doit installer l'appli ( sur chaque poste du client)
+   - client léger (web) : pas besoin d'installer quelque chose sur le poste du client (il suffit d'un navigateur web)
+   - client mobile/embarquée : on doit l'installer sur chaque terminal   
+   - bibliothèques de classes : 
+___________________________________________________    
+Empaquetage et déploiement d'une application Java 
+___________________________________________________
+- client lourd ou bibliothèque de classes => .jar (Java ARchive)
+  le jar peut être exécutable
+  si on décompresse un jar, on observe l'arborescence suivante : 
+       fichiers.class organisés dans des packages
+       META-INF/ MANIFEST.MF contient l'indication du main-class et le classpath 
+
+- client léger (web) ============> .war (Web ARchive)
+
+- assemblage de plusieurs modules (web et bibliothèques) ===> .ear (Entreprise ARchive)
+  il contiendra plusieurs wars et plusieurs jars.
+         
+ _________________ Révision Java __________________
+
+Variable d'environnement = variable permettant de stocker un chemin réutilisable
+La variable PATH permet de référencer les chemins de binaires exécutables depuis n'importe quel répertoire :
+    JAVA_HOME = répertoire du jdk
+Dans le path, ajouter : %JAVA_HOME%\bin
+ ____________________
+ La machine virtuelle peut être paramétrée à l'aide d'options à définir
+ dans une variable d'environnement JAVA_OPTS
+ Liste des options :
+ https://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html
+ 
+ JAVA_OPTS
+ -Xms1G -Xmx2G -XX:+DisableExplicitGC
+ 
+ DisableExplicitGC permet de neutraliser les appels
+ au Garbage Collector dans le code.
+ System.gc();
+ ____________________
+ 
+-  package = regroupement logique et physique (répertoire) de plusieurs fichiers (classes, interfaces, fichiers ressources) 
+   Intérêts : organisation du code
+                    éviter des conflits de noms (dans le cas de plusieurs fichiers avec le même nom)
+                    
+                    java.util.List l1 = new ArrayList<>();
+                    java.awt.List = ....
+                    
+- Facteurs de visibilité (modificateurs d'accès) :
+  public : visibilité globale
+  private : visibilité classe
+  protected : visibilité classe et sous-classes
+  default (rien) : visibilité package                    
+______________                      
+- POJO (Plain Old Java Object) : 
+  classe Java qui ne respecte aucune règle
+_______________  
+- JavaBean : classe Java qui doit respecter les règles suivantes :
+  * variables private ou protected
+  * un constructeur sans paramètres
+  * des accesseurs et des mutateurs (getters/setters)
+  * un moyen de sérialisation (implements Serializable)
+    La sérialisation est le fait de stocker l'état d'un objet en mémoire
+    dans un support persistant                                           
+_______________
+Exception : événement qui arrête l'exécution
+On peut : 
+- soit la capturer et la traiter : try / catch
+- soit la remonter pour la traiter au moment de l'appel : throw / throws
+________________________
+
+- 1 classe est :
+  * soit un ensemble de méthodes utilitaires
+  * soit une définition d'un type d'objets
+
+- dans une classe, on va avoir des attributs, des méthodes et des constructeurs
+
+_____Concepts Objet____________
+- Encapsulation : protéger l'accès aux attributs
+  variables private ou protected puis des getters et setters 
+  dans le but d'ajouter du contrôle
+  
+- Agrégation : association ou composition d'objets
+On doit créer l'objet interne soit avant utilisation ou dans le constructeur
+  
+- Héritage : étendre une classe existante
+ * une classe hérite d'une et une seule classe
+ * une classe fille hérite des membres de la classe mère mais n'a 
+ accès qu'aux éléments public ou protected
+ * une classe fille n'hérite pas des constructeurs de la mère
+   mais peut les appeler à l'aide du mot-clé "super"
+   * une classe fille peut redéfinir une méthode héritée
+     @Override
+
+- Abstraction :
+  Classe abstraite : 
+      * non instanciable
+      * définir un modèle pour les sous-classes
+      * elle peut contenir des attributs, des méthodes, des constructeurs
+      * elle peut contenir des méthodes abstraites :
+        méthodes sans corps, les sous-classes concrètes doivent 
+        obligatoirement les définir.
+
+ Interface : pseudo classe abstraite ne contenant que 
+ des signatures de méthodes
+ pour Définir  un contrat que les classes doivent implémenter
+ 
+ Exemple :
+     notre contrat : qlq chose est pliable s'il contient une méthode
+     plier et une autre deplier
+ public Pliable{
+         void plier();
+         void deplier();   
+  }
+  
+  public class Chaise implements Pliable {
+        private String modele;  
+        public void plier(){
+            //....
+        }
+        public void deplier(){
+            //....
+        }
+    }
+  ____________________________
+  public class Produit {
+    private long id;
+    private String description;
+    private double prix;
+
+    //Enumération = ensemble de constantes
+    public enum EtatProduit {
+
+        TRES_BON, BON, MOYEN;
+
+    }
+    
+
+    private EtatProduit etat;   
+      
+}    
+
+Produit p1 = new Produit();
+p1.setDescription("Ordinateur");
+p1.setEtat(EtatProduit.BON);
+      
+      
+      
+
+
+________________ Technologies Java __________________
+Une application peut être composée de plusieurs couches :
+
+- Présentation (visuel) :
+  * client lourd : Swing, SWT, JavaFx
+  * client léger : Servlet/JSP
+    frameworks MVC : Spring MVC, JSF (PrimeFaces, RichFaces), Struts
+  * client mobile : Java Card, Android (Java / Kotlin)      
+
+- Traitement (métier) : 
+  * classes ou bibliothèques de classes
+  * web services : application web (qui n'a pas d'IHM) qui répond à
+    une requête HTTP
+    (ce sont des applications inter-opérables)    
+  * EJB (Enreprise Java Bean)  composants autonomes et exécutables
+    100% Java (RMI ; Remote Method Invocation)  
+
+- Accés aux données
+  classes ou bibliothèques de classes
+  web services
+  EJB (Enreprise Java Bean)
+  JDBC (Java DataBase Connectivity) : API de connexion aux Bdds
+  Frameworks ORM (Object Relational Mapping) : JPA (Java Persistence API)
+     implémentation : Hibernate, EclipseLink, OpenJPA, iBatis,...
+     
+_________________Maven___________________________________
+
+Outils de build (construction de projets)
+
+Fonctionnalités : 
+- offrir des archetypes (arborescence type d'un projet)
+- compilation
+- packaging (construction d'une archive : jar, war ou ear)
+- gestion des dépendances (librairies)
+- génération de rapports (documentation de l'application)
+- lancer des tests unitaires et génération de rapports
+- couplage avec un dépôt de données
+- transfert de fichiers (par ftp, par scp)
+- couplage avec des systèmes d'intégration continue 
+  (Jenkins, Apache Continiuum, Gitlab-CI)
+- couplage avec des systèmes d'analyse de code (qualité) 
+
+AUTRES OUTILS DE BUILD : 
+   Ant (succession de tâches) + Ivy (gestion des dépendances),
+   Maven
+   Gradle
+_______________
+
+
+Un projet Maven est piloté par un fichier de config (pom.xml)
+
+Chaque projet doit avoir un identifiant unique GAV
+
+Le versioning étendu utilise un modèle X.Y.Z :
+X : Version Majeure du logiciel
+Y : Version mineure du logiciel
+Z : Révision de la version précédente
+
+- Un Goal représente une tâche (une cible) à exécuter
+  peut être un enchaînement de plusieurs actions.
+  
+  mvn options goal1 goal2 ...
+  
+  Avec Eclipse : Project > Run As > Maven build... > saisir le goal
+
+- Principaux Goals Maven :
+  clean : supprime le répertoire target
+  compile : compilation des fichiers sources
+  test : lancement des tests unitaires (compile > test)
+  package : génération de l'archive 'jar ou war ou ear (compile > test > package)
+  install : installer votre projet dans le repository pour pouvoir le réutiliser
+                ensuite en tant que dépendance. (compile>test>package>install)
+                le repository local : /user/.m2/repository
+  site : génération de la documentation du site (compile/test/package/site)
+
+___________javadoc__________________________________________
+Un code doit obligatoirement être documenté
+pour faciliter sa lecture et sa compréhension
+
+On doit dans un premier temps ajouter des commentaires /** */
+et utiliser des annotations.
+
+Ensuite, il faudrait générer la javadoc en utilisant javadoc.exe.
+
+- Avec Eclipse : Menu Project > Generate JavaDoc
+
+- Avec Maven : il nous faut un plugin :
+https://maven.apache.org/plugins/maven-javadoc-plugin/
+
+_______________________________________________
+Un repository est un lieu de stockage de bibliothèques qu'on pourrait requêter
+pour ajouter nos dépendances
+
+<!-- Ajout de repositories -->
+        <repositories>
+                <repository>
+                        <id>prime-repo</id>
+                        <name>PrimeFaces Maven Repository</name>
+                        <url>http://repository.primefaces.org</url>
+                        <layout>default</layout>
+                </repository>
+        </repositories>
+_________________________________________
+Les properties sont des variables réutilisables dans le pom.xml
+On peut en définir librement puis les appeler en utilisant ${nomVar}
+ou utiliser des variables prédéfinies :
+    http://maven.apache.org/ref/3.6.1/maven-model-builder/#Model_Interpolation
+    
+ __________________________TESTS UNITAIRES ______________________
+" mvn test" permet de compiler le code et de lancer les tests unitaires.
+
+Test unitaire : un ensemble de méthodes contenant des vérifications du bon
+fonctionnement du code
+Intérêt : valider la fonctionnalité et éviter les régressions
+- jUnit : bibliothèque permettant de réaliser des tests unitaires
+TestCase : cas de test (classe permettant de regrouper des tests)
+TestSuite : ensemble de cas de tests
+Assertion : expression de validation
+
+_________________ Gestion des logs en Java ____________________
+Objectif : écrire des traces pour pouvoir suivre l'exécution ou les erreurs de l'application
+On peut utiliser :
+    - soit l'api native : java.util.logging (inconvénient : api limitée)
+    - soit une api externe : Log4j
+
+Vocabulaire :
+    - Logger : objet permettant d'écrire les logs
+    - Appender : support de logs (console, fichier, email, bdd,...)
+    - Layout : type de message (texte, xml)
+    - Pattern : format du message (dateHeure niveau classe message saut de ligne)
+    - Level : niveau du message (info, warn, error,...)
+
+Mise en place :
+    - ajout de dépendances : 
+        log4j >= 2.x (log4j-core.jar et log4j-api.jar)
+        log4j 1.x => log4j.jar
+    - ajout d'un fichier de conf log4j2.xml ou log4j.xml
+
+
+    <dependency>
+
+        <groupId>org.apache.logging.log4j</groupId>
+
+        <artifactId>log4j-api</artifactId>
+
+        <version>2.12.0</version>
+
+      </dependency>
+
+      <dependency>
+
+        <groupId>org.apache.logging.log4j</groupId>
+
+        <artifactId>log4j-core</artifactId>
+
+        <version>2.12.0</version>
+
+      </dependency>
+
+
+_____________________Généricité __________________________
+concept permettant d'écrire un code indépendant du type
+d'objets utilisés.
+
+Exemple de classe générique :
+ __________________________
+public class Calcul<T> {
+       public T a;
+       public T b;
+       
+       public void permuter(){
+          T c = a;
+          a = b;
+          b = c;
+       }          
+ }
+  Calcul<Integer> cl = new Calcul<>();
+  cl.a = 5;
+    cl.b = 8;
+    cl.permuter();
+ _________________________________________
+
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TODO : 
+Git <=> Eclipse
+POO
+Swing
+Threads
+Finalité (assemblage complet)
+
+
+
+
+
+ 
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

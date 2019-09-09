@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+ 
+    <!-- Logging Properties -->
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %p %c %m%n</Property>
+        <Property name="APP_LOG_ROOT">c:/tempBidon</Property>
+    </Properties>
+     
+    <Appenders>
+     
+        <!-- Console Appender -->
+        <Console name="MonAppenderConsole" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+         
+        <!-- File Appenders on need basis -->
+        <RollingFile name="MonAppenderFichier" fileName="${APP_LOG_ROOT}/appAmiens.log"
+            filePattern="${APP_LOG_ROOT}/app-debug-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="50MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+        
+        <RollingFile name="MonAppenderError" fileName="${APP_LOG_ROOT}/errorAmiens.log"
+            filePattern="${APP_LOG_ROOT}/app-debug-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="50MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+    </Appenders>
+ 
+    <Loggers>
+     
+        <Logger name="myLogger2" additivity="false" level="all">
+            <AppenderRef ref="MonAppenderError" />
+            <AppenderRef ref="MonAppenderConsole" />
+        </Logger> 
+         
+        
+        <!-- Logger principal -->       
+        <Root level="all">
+            <AppenderRef ref="MonAppenderConsole"/>
+            <AppenderRef ref="MonAppenderFichier"/>
+        </Root>
+ 
+        <Logger name="org.hibernate" level="info"/>
+        <Logger name="org.hibernate.SQL" level="info" />
+ 
+ 
+    </Loggers>
+ 
+</Configuration>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+   version="1.0">
+   
+  <!--  la configuration d'une connexion vers
+  1 Bdd -->
+   <persistence-unit name="mypersistence-unit">
+      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      
+      <properties>         
+      	<!-- affichage des requêtes SQL énérées
+      	à mettre à false en production -->
+      	 <property name="hibernate.show_sql" value="true"/>
+         <property name="hibernate.format_sql" value="true"/>
+         
+         <!-- détcter automatiquement les classes
+         annotées afin de les prendre en compte
+         dans le mapping -->
+         <property name="hibernate.archive.autodetection" value="class, hbm"/>
+         
+         <!-- driver sur SGBD -->
+         <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+         
+         <!-- url et identifiants de connexion -->
+         <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/jpaBDD?useSSL=false&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"/>
+         <property name="hibernate.connection.username" value="root"/>
+         <property name="hibernate.connection.password" value=""/>
+         
+         
+         <!--  configuration du pool de connexions -->
+         <property name="hibernate.c3p0.min_size" value="5"/>
+         <property name="hibernate.c3p0.max_size" value="20"/>
+         <property name="hibernate.c3p0.timeout" value="3000"/>
+         <property name="hibernate.c3p0.max_statements" value="50"/>
+         
+         <!-- Dialect permettant de traduire le JP-QL vers du SQL natif -->
+         <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+         
+         <!-- Stratégie de création ou modification automatique
+         de la bdd :
+         create-drop : supprime totalement la structure et les données
+         update : met à jour mais ne supprimer pas -->
+         <property name="hibernate.hbm2ddl.auto" value="update"/>
+      </properties>
+   </persistence-unit>
+   
+   
+   
+</persistence>
